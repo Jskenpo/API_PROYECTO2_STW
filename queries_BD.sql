@@ -24,6 +24,23 @@ create table reservas(
 	cant_presonas int
 );
 
+alter table reservas
+add column fecha date;
+
+update reservas
+set fecha = '2023-05-20'
+where id_reserva = 1;
+
+update reservas
+set fecha = '2023-06-3'
+where id_reserva = 2;
+
+update reservas
+set fecha = '2023-06-14'
+where id_reserva = 3;
+
+
+
 INSERT INTO categorias (categoria) VALUES
 	('Pizza'),
 	('Hamburguesas'),
@@ -44,9 +61,20 @@ insert into usuarios(usuario,contraseña) values
 insert into reservas(id_restaurante,id_usuario,hora,cant_presonas) values 
 	(1,1,'12:30 PM',4),
 	(2,3,'7:30 PM',2),
-	(3,2,'9:00 PM',6);
+	(3,2,'9:00 PM',6)  ;
+
+insert into reservas (id_restaurante, id_usuario, hora, cant_presonas)
+values
+    (4,1,'12:30 PM',4);
 
 select * from reservas;
 select from usuarios;
 select * from restaurantes;
 select * from categorias;
+
+
+select u.usuario, r.nombre_restaurante, re.hora, re.cant_presonas, re.fecha
+from usuarios u
+inner join reservas re on u.id_usuario = re.id_usuario
+inner join restaurantes r on r.id_restaurante = re.id_restaurante
+where u.id_usuario = 1;

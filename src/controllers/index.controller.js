@@ -21,6 +21,37 @@ const ObtenerUsuario  = async (req, res) => {
     }
 }
 
+const ObtenerRestaurantes  = async (req, res) => {
+    const consulta = `select * from restaurantes`;
+    try {
+        const response = await pool.query(consulta);
+        console.log(response.rows);
+        res.status(200).json(response.rows);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+const ObtenerReservacionesByid = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const consulta = `
+    select u.usuario, r.nombre_restaurante, re.hora, re.cant_presonas, re.fecha
+    from usuarios u
+    inner join reservas re on u.id_usuario = re.id_usuario
+    inner join restaurantes r on r.id_restaurante = re.id_restaurante
+    where u.id_usuario = $1;
+    `;
+    try {
+        const response = await pool.query(consulta, [id]);
+        console.log(response.rows);
+        res.status(200).json(response.rows);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
-    ObtenerUsuario
+    ObtenerUsuario,
+    ObtenerRestaurantes,
+    ObtenerReservacionesByid
 }
