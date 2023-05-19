@@ -4,7 +4,6 @@ create table usuarios(
 	contraseña varchar(100)
 );
 
-
 create table categorias(
 	id_categoria SERIAL PRIMARY KEY,
 	categoria varchar(50)
@@ -50,5 +49,4 @@ insert into reservas(id_restaurante,id_usuario,hora,cant_presonas) values
 select * from reservas;
 select from usuarios;
 select * from restaurantes;
-	
 select * from categorias;
