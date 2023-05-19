@@ -2,8 +2,12 @@ create table usuarios(
 	id_usuario SERIAL PRIMARY KEY,
 	usuario varchar(100),
 	contraseña varchar(100),
-	imagen BYTEA
 )
+
+
+alter table usuarios 
+drop column imagen
+
 
 create table categorias(
 	id_categoria SERIAL PRIMARY KEY,
@@ -37,6 +41,18 @@ INSERT INTO restaurantes (nombre_restaurante, estado, id_categoría) VALUES
 	('Frisco Grill', 'Abierto', 2),
 	('Dominos Pizza', 'Abierto', 1);
 	
+insert into usuarios(usuario,contraseña) values 
+	('kenpo','12345'),
+	('teviet','12345'),
+	('valdecin','12345')
+
+insert into reservas(id_restaurante,id_usuario,hora,cant_presonas) values 
+	(1,1,'12:30 PM',4),
+	(2,3,'7:30 PM',2),
+	(3,2,'9:00 PM',6)
+
+select * from reservas
+select from usuarios
 select * from restaurantes 
 	
 select * from categorias
