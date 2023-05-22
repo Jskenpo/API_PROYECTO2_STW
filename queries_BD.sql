@@ -133,3 +133,5 @@ from restaurantes res
 select res.nombre_restaurante, res.descripcion, res.hora_apertura, res.hora_cerrada, cat.categoria
 from restaurantes res
     inner join categorias cat on res.id_categoría = cat.id_categoria;
+
+select * from reservas

@@ -76,9 +76,6 @@ const ObtenerRestaurantesByCategory = async (req, res) => {
 }
 
 
-
-
-
 const ObtenerReservacionesByid = async (req, res) => {
     const id = parseInt(req.params.id);
     const consulta = `
@@ -117,9 +114,47 @@ const NuevoRestaurante = async (req, res) => {
     }
 }
 
+
+const EliminarReservación = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const consulta = `
+    delete from reservas where id_reserva = $1;
+    `;
+    try {
+        const response = await pool.query(consulta, [id]);
+        console.log(response);
+        res.status(200).json(`Reservación ${id} eliminada correctamente`);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+const NuevaReservacion = async (req, res) => {
+    const { id_restaurante ,cliente, hora, fecha_reserva, cant_personas } = req.body;
+    const consulta = `
+    insert into reservas (id_restaurante, cliente, hora, fecha_reserva, cant_personas)
+    values ($1, $2, $3, $4, $5);
+    `;
+    try {
+        const response = await pool.query(consulta, [id_restaurante ,cliente, hora, fecha_reserva, cant_personas]);
+        console.log(response);
+        res.status(200).json({
+            message: 'Reservación agregada correctamente',
+            body: {
+                user: { id_restaurante ,cliente, hora, fecha_reserva, cant_personas }
+            }
+        })
+    } catch (e) {
+        console.log(e);
+    }
+}
+    
+
 module.exports = {
     ObtenerRestaurantes,
     ObtenerReservacionesByid,
     NuevoRestaurante,
-    ObtenerRestaurantesByCategory
+    ObtenerRestaurantesByCategory,
+    EliminarReservación,
+    NuevaReservacion
 }
