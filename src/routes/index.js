@@ -9,7 +9,6 @@ const {ObtenerUsuario,ObtenerRestaurantes,ObtenerReservacionesByid} = require('.
 router.get('/restaurantes', ObtenerRestaurantes);
 
 //GET BY ID
-router.get('/user/:id', ObtenerUsuario);
 router.get('/reservaciones/:id', ObtenerReservacionesByid);
 
 

@@ -1,45 +1,57 @@
 const { Pool } = require('pg');
+const fs = require('fs');
+const path = require('path');
 
 const pool = new Pool({
-    user: 'postgres',
-    host: 'proyecto2-stw.c64q2jpilfie.us-east-2.rds.amazonaws.com',
-    database: 'PROYECTO2',
-    password: 'ClaveRDS#2',
-    port: 5432,
+  user: 'postgres',
+  host: 'proyecto2-stw.c64q2jpilfie.us-east-2.rds.amazonaws.com',
+  database: 'PROYECTO2',
+  password: 'ClaveRDS#2',
+  port: 5432,
 });
 
+const ObtenerRestaurantes = async (req, res) => {
+  const consulta = `
+    SELECT res.id_restaurante, res.nombre_restaurante, res.descripcion, res.hora_apertura, res.hora_cerrada, cat.categoria
+    FROM restaurantes res
+    INNER JOIN categorias cat ON res.id_categoría = cat.id_categoria;
+  `;
+  try {
+    const response = await pool.query(consulta);
+    const restaurantes = response.rows;
 
-const ObtenerUsuario  = async (req, res) => {
-    const id = parseInt(req.params.id);
-    const consulta = `select * from usuarios where id_usuario = $1`;
-    try {
-        const response = await pool.query(consulta, [id]);
-        console.log(response.rows);
-        res.status(200).json(response.rows);
-    } catch (e) {
-        console.log(e);
-    }
-}
+    // Agregar la propiedad 'imagen' a cada restaurante con la ruta del archivo correspondiente
+    const restaurantesConImagen = restaurantes.map(restaurante => ({
+      ...restaurante,
+      imagen: path.join(__dirname, '../imas', `${restaurante.id_restaurante}.jpg`),
+    }));
 
-const ObtenerRestaurantes  = async (req, res) => {
-    const consulta = `select * from restaurantes`;
-    try {
-        const response = await pool.query(consulta);
-        console.log(response.rows);
-        res.status(200).json(response.rows);
-    } catch (e) {
-        console.log(e);
-    }
-}
+    // Leer el contenido de cada archivo de imagen y convertirlo a base64
+    const restaurantesConImagenBase64 = await Promise.all(
+      restaurantesConImagen.map(async restaurante => ({
+        ...restaurante,
+        imagen: fs.readFileSync(restaurante.imagen, { encoding: 'base64' }),
+      }))
+    );
+
+    res.status(200).json(restaurantesConImagenBase64);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+};
+
+module.exports = { ObtenerRestaurantes };
+
 
 const ObtenerReservacionesByid = async (req, res) => {
     const id = parseInt(req.params.id);
     const consulta = `
-    select u.usuario, r.nombre_restaurante, re.hora, re.cant_presonas, re.fecha
-    from usuarios u
-    inner join reservas re on u.id_usuario = re.id_usuario
-    inner join restaurantes r on r.id_restaurante = re.id_restaurante
-    where u.id_usuario = $1;
+    select  r.cliente, r.hora, r.fecha_reserva, r.cant_personas
+    from reservas r
+    inner join restaurantes re on r.id_restaurante = re.id_restaurante
+    where r.id_restaurante = $1;
+    ;
     `;
     try {
         const response = await pool.query(consulta, [id]);
@@ -50,8 +62,28 @@ const ObtenerReservacionesByid = async (req, res) => {
     }
 }
 
+const NuevoRestaurante = async (req, res) => {
+    const { usuario, contraseña, nombre_restaurante, descripcion, hora_apertura, hora_cerrada, id_categoría } = req.body;
+    const consulta = `
+    insert into restaurantes (usuario,contraseña,nombre_restaurante, descripcion, hora_apertura, hora_cerrada, id_categoría)
+    values ($1, $2, $3, $4, $5, $6, $7);
+    `;
+    try {
+        const response = await pool.query(consulta, [usuario, contraseña, nombre_restaurante, descripcion, hora_apertura, hora_cerrada, id_categoría]);
+        console.log(response);
+        res.status(200).json({
+            message: 'Restaurante agregado correctamente',
+            body: {
+                user: { nombre_restaurante, descripcion, hora_apertura, hora_cerrada, id_categoría }
+            }
+        })
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
-    ObtenerUsuario,
     ObtenerRestaurantes,
-    ObtenerReservacionesByid
+    ObtenerReservacionesByid,
+    NuevoRestaurante
 }
