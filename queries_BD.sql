@@ -124,7 +124,7 @@ from reservas r
 ;
 
 /*restaurantes por categoría*/
-select res.nombre_restaurante, res.descripcion, res.hora_apertura, res.hora_cerrada, cat.categoria
+select res.id_restaurante, res.nombre_restaurante, res.descripcion, res.hora_apertura, res.hora_cerrada, cat.categoria
 from restaurantes res
     inner join categorias cat on res.id_categoría = cat.id_categoria
     where res.id_categoría = 3;

@@ -3,45 +3,80 @@ const fs = require('fs');
 const path = require('path');
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'proyecto2-stw.c64q2jpilfie.us-east-2.rds.amazonaws.com',
-  database: 'PROYECTO2',
-  password: 'ClaveRDS#2',
-  port: 5432,
+    user: 'postgres',
+    host: 'proyecto2-stw.c64q2jpilfie.us-east-2.rds.amazonaws.com',
+    database: 'PROYECTO2',
+    password: 'ClaveRDS#2',
+    port: 5432,
 });
 
 const ObtenerRestaurantes = async (req, res) => {
-  const consulta = `
+    const consulta = `
     SELECT res.id_restaurante, res.nombre_restaurante, res.descripcion, res.hora_apertura, res.hora_cerrada, cat.categoria
     FROM restaurantes res
     INNER JOIN categorias cat ON res.id_categoría = cat.id_categoria;
   `;
-  try {
-    const response = await pool.query(consulta);
-    const restaurantes = response.rows;
+    try {
+        const response = await pool.query(consulta);
+        const restaurantes = response.rows;
 
-    // Agregar la propiedad 'imagen' a cada restaurante con la ruta del archivo correspondiente
-    const restaurantesConImagen = restaurantes.map(restaurante => ({
-      ...restaurante,
-      imagen: path.join(__dirname, '../imas', `${restaurante.id_restaurante}.jpg`),
-    }));
+        // Agregar la propiedad 'imagen' a cada restaurante con la ruta del archivo correspondiente
+        const restaurantesConImagen = restaurantes.map(restaurante => ({
+            ...restaurante,
+            imagen: path.join(__dirname, '../imas', `${restaurante.id_restaurante}.jpg`),
+        }));
 
-    // Leer el contenido de cada archivo de imagen y convertirlo a base64
-    const restaurantesConImagenBase64 = await Promise.all(
-      restaurantesConImagen.map(async restaurante => ({
-        ...restaurante,
-        imagen: fs.readFileSync(restaurante.imagen, { encoding: 'base64' }),
-      }))
-    );
+        // Leer el contenido de cada archivo de imagen y convertirlo a base64
+        const restaurantesConImagenBase64 = await Promise.all(
+            restaurantesConImagen.map(async restaurante => ({
+                ...restaurante,
+                imagen: fs.readFileSync(restaurante.imagen, { encoding: 'base64' }),
+            }))
+        );
 
-    res.status(200).json(restaurantesConImagenBase64);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: 'Error en el servidor' });
-  }
+        res.status(200).json(restaurantesConImagenBase64);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
 };
 
-module.exports = { ObtenerRestaurantes };
+const ObtenerRestaurantesByCategory = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const consulta = `
+    select res.id_restaurante, res.nombre_restaurante, res.descripcion, res.hora_apertura, res.hora_cerrada, cat.categoria
+    from restaurantes res
+    inner join categorias cat on res.id_categoría = cat.id_categoria
+    where res.id_categoría = $1;
+    `
+    try {
+        const response = await pool.query(consulta, [id]);
+        const restaurantes = response.rows;
+
+        // Agregar la propiedad 'imagen' a cada restaurante con la ruta del archivo correspondiente
+        const restaurantesConImagen = restaurantes.map(restaurante => ({
+            ...restaurante,
+            imagen: path.join(__dirname, '../imas', `${restaurante.id_restaurante}.jpg`),
+        }));
+
+        // Leer el contenido de cada archivo de imagen y convertirlo a base64
+        const restaurantesConImagenBase64 = await Promise.all(
+            restaurantesConImagen.map(async restaurante => ({
+                ...restaurante,
+                imagen: fs.readFileSync(restaurante.imagen, { encoding: 'base64' }),
+            }))
+        );
+
+        res.status(200).json(restaurantesConImagenBase64);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+
+}
+
+
+
 
 
 const ObtenerReservacionesByid = async (req, res) => {
@@ -85,5 +120,6 @@ const NuevoRestaurante = async (req, res) => {
 module.exports = {
     ObtenerRestaurantes,
     ObtenerReservacionesByid,
-    NuevoRestaurante
+    NuevoRestaurante,
+    ObtenerRestaurantesByCategory
 }
