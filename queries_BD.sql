@@ -135,3 +135,5 @@ from restaurantes res
     inner join categorias cat on res.id_categoría = cat.id_categoria;
 
 select * from reservas
+
+select * from restaurantes

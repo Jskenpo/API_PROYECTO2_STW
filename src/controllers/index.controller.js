@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
 
 const pool = new Pool({
     user: 'postgres',
@@ -148,7 +149,21 @@ const NuevaReservacion = async (req, res) => {
         console.log(e);
     }
 }
-    
+
+const RestaurantesRaw = async (req, res) => {
+    const consulta = `
+    select * from restaurantes;
+    `;
+    try {
+        const response = await pool.query(consulta);
+        console.log(response.rows);
+        res.status(200).json(response.rows);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+
 
 module.exports = {
     ObtenerRestaurantes,
@@ -156,5 +171,6 @@ module.exports = {
     NuevoRestaurante,
     ObtenerRestaurantesByCategory,
     EliminarReservación,
-    NuevaReservacion
+    NuevaReservacion,
+    RestaurantesRaw
 }
