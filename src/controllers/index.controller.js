@@ -80,7 +80,7 @@ const ObtenerRestaurantesByCategory = async (req, res) => {
 const ObtenerReservacionesByid = async (req, res) => {
     const id = parseInt(req.params.id);
     const consulta = `
-    select  r.cliente, r.hora, r.fecha_reserva, r.cant_personas
+    select r.id_reserva, r.cliente, r.hora, r.fecha_reserva, r.cant_personas
     from reservas r
     inner join restaurantes re on r.id_restaurante = re.id_restaurante
     where r.id_restaurante = $1;
