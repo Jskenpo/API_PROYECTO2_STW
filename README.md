@@ -112,5 +112,8 @@ Este repositorio contiene el código fuente del API utilizado en la página web 
           `localhost:3070/reservaciones/:id` enpoint para eliminar una reservación por su id
       </li>
   </ul>
+    
+ ## Diagrama Entidad - Relación
+ <img src="./src/imas/ER_P2_STW.jpeg"/>
 
 
