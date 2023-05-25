@@ -53,6 +53,8 @@ Este repositorio contiene el código fuente del API utilizado en la página web 
 3. Utiliza el comando `npm install` para instalar todas las dependencias especificadas en el package.JSON
     <br>
 4. Seguidamente utiliza el comando `npm run dev` para poder inicializar el API en el puerto `localhost:3070`
+    <br>
+5. Adicionalmente el API esta publicado en una intancia AWS con la dirección http://3.22.74.121:3070
 
 
 ## Estructura de proyecto
@@ -89,27 +91,27 @@ Este repositorio contiene el código fuente del API utilizado en la página web 
       <li>
         <b>POST</b>
           <br>
-          `localhost:3070/archivo/:id` enpoint para subir un archivo con el nombre de id
+          `3.22.74.121:3070/archivo/:id` enpoint para subir un archivo con el nombre de id
           <br>
-          `localhost:3070/restaurantes` enpoint para publicar un nuevo restaurante 
+          `3.22.74.121:3070/restaurantes` enpoint para publicar un nuevo restaurante 
           <br>
-          `localhost:3070/reservaciones`  enpoint para publicar una nueva reservación
+          `3.22.74.121:3070/reservaciones`  enpoint para publicar una nueva reservación
       </li>
       <li>
           <b>GET</b>
           <br>
-          `localhost:3070/reservaciones/:id` enpoint para ver las reservaciones por id del restaurante
+          `3.22.74.121:3070/reservaciones/:id` enpoint para ver las reservaciones por id del restaurante
           <br>
-          `localhost:3070/restaurantes`  enpoint para ver todos los restaurantes 
+          `3.22.74.121:3070/restaurantes`  enpoint para ver todos los restaurantes 
           <br>
-          `localhost:3070/restaurantes/raw`  enpoint para ver el formato oiginal de la tabla restaurantes
+          `3.22.74.121:3070/restaurantes/raw`  enpoint para ver el formato oiginal de la tabla restaurantes
           <br>
-          `localhost:3070/restaurantes/:id`  enpoint para ver los restaurantes por categoría
+          `3.22.74.121:3070/restaurantes/:id`  enpoint para ver los restaurantes por categoría
       </li>
       <li>
           <b>DEKETE</b>
           <br>
-          `localhost:3070/reservaciones/:id` enpoint para eliminar una reservación por su id
+          `3.22.74.121:3070/reservaciones/:id` enpoint para eliminar una reservación por su id
       </li>
   </ul>
     
